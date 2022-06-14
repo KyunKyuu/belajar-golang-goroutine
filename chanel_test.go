@@ -41,7 +41,26 @@ func TestChanelAsParameter(t *testing.T){
 	fmt.Println(data)
 	close(chanel3)
 	time.Sleep(5 * time.Second)
+}
+
+func ChanelOnlyIn(chanel chan<- string){
+	time.Sleep(2 * time.Second)
+	chanel <- "Chanel Only and Out"
+	
+}
+
+func ChanelOnlyOut(chanel <-chan string){
+	data := <-chanel
+	fmt.Println(data)
+}
+
+func TestChanelOnlyInAndOut(t *testing.T){
+	chanel := make(chan string)
+	defer close(chanel)
+
+	go ChanelOnlyIn(chanel)
+	go ChanelOnlyOut(chanel)
 
 
-
+	time.Sleep(5 * time.Second)
 }
