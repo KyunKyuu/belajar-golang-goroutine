@@ -80,3 +80,28 @@ func TestRangeChanel(t *testing.T){
 	 }
 
 }
+
+func TestSelectChnale(t *testing.T){
+	chanel1 := make(chan string)
+	chanel2 := make(chan string)
+
+	go GiveMeResponse(chanel1)
+	go GiveMeResponse(chanel2)
+
+	counter:=0
+	for{
+		select{
+		case data := <-chanel1:
+			fmt.Println("data dari chanel 1", data)
+			counter++
+		case data := <-chanel2:
+			fmt.Println("data dari chanel 2", data)
+			counter++
+		default:
+			fmt.Println("Sedang menunggu")
+		}
+		if counter == 2 {
+			break
+		}
+	}
+}
