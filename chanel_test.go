@@ -2,6 +2,7 @@ package belajar_golang_goroutine
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -29,7 +30,7 @@ func TestCreateChanel(t *testing.T) {
 }
 
 func GiveMeResponse(chanel3 chan string){
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second) 
 	chanel3 <- "Chanel sebagai parameter"
 }
 
@@ -63,4 +64,19 @@ func TestChanelOnlyInAndOut(t *testing.T){
 
 
 	time.Sleep(5 * time.Second)
+}
+
+func TestRangeChanel(t *testing.T){
+	 chanel := make(chan string)
+	 go func(){
+		for i:=0; i<10; i++{
+			chanel <- "Menerima data ke " + strconv.Itoa(i)
+		}
+		close(chanel)
+	 }()
+
+	 for data := range(chanel) {
+		fmt.Println("Menerima data", data)
+	 }
+
 }
