@@ -3,7 +3,6 @@ package belajar_golang_goroutine
 import (
 	"fmt"
 	"strconv"
-	"sync"
 	"testing"
 	"time"
 )
@@ -67,6 +66,19 @@ func TestChanelOnlyInAndOut(t *testing.T){
 	time.Sleep(5 * time.Second)
 }
 
+func TestBufferedChanel(t *testing.T){
+
+	//Buffer ini berfungsi agar penyimpanan di chnale nya bisa lebih banyak, dan kalau si data nya belum diambil pun ga ada di blocking atau error
+
+	channel := make(chan string, 3)
+	defer close(channel)
+
+	channel <- "ini test channel"
+
+	fmt.Println(cap(channel))  //Untuk melihat panjang buffer nya
+	fmt.Println(len(channel))  //Untuk melihat jumlah data yang ada di buffer nya
+}
+
 func TestRangeChanel(t *testing.T){
 	 chanel := make(chan string)
 	 go func(){
@@ -107,54 +119,3 @@ func TestSelectChnale(t *testing.T){
 	}
 }
 
-func TestMutex(t *testing.T){
-	x := 0
-	var mutex sync.Mutex
-
-	for i:=1; i<=1000; i++{
-		go func(){
-			for j:=1; j<=100; j++{
-				mutex.Lock()
-				x = x+1
-				mutex.Unlock()
-			}
-		}()
-	}
-
-	time.Sleep(5 * time.Second)
-	fmt.Println("Counter = ", x)
-}
-
-type BankAccount struct {
-	RWMutex sync.RWMutex
-	balance int
-}
-
-func (account *BankAccount)AddBalance(value int) {
-	account.RWMutex.RLock()
-	account.balance += value
-	account.RWMutex.RUnlock()
-}
-
-func (account *BankAccount)GetBalance() int{
-	account.RWMutex.Lock()
-	balance := account.balance
-	account.RWMutex.Unlock()
-	return balance
-}
-
-func TestRWMutex(t *testing.T){
-	account := BankAccount{}
-
-	for i:=0; i<100; i++{
-		go func(){
-			for j := 0; j < 100; j++ {
-				account.AddBalance(1)
-				fmt.Println(account.GetBalance())
-			}
-		}()
-	}
-
-	time.Sleep(5 * time.Second)
-	fmt.Println("Total Balance", account.GetBalance())
-}
