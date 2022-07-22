@@ -16,6 +16,7 @@ func TestTimer(t *testing.T) {
 
 }
 
+//Kejadian Nya cuma Sekali
 func TestTimerFunc(t *testing.T){
 	group := sync.WaitGroup{}
 	group.Add(1)
@@ -27,3 +28,5 @@ func TestTimerFunc(t *testing.T){
 	fmt.Println(time.Now())
 	group.Wait()
 }
+
+ 
